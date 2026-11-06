@@ -6,8 +6,17 @@
 [![Tests Passing](https://img.shields.io/badge/Tests-53%2F53%20Passing-success)](https://github.com/Jahnavi-Patel-C/BuyWise)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- **Official Repository**: [https://github.com/Jahnavi-Patel-C/BuyWise](https://github.com/Jahnavi-Patel-C/BuyWise)
-- **Live Application URL**: Deployed via Vercel + Render *(see [Live Cloud Deployment Guide](#8-live-cloud-deployment-guide) below)*
+---
+
+## Live Demo
+
+| Component | Live URL | Platform |
+| :--- | :--- | :--- |
+| **Live Web Application** | **[https://frontend-psi-weld-u5xxyzg6a6.vercel.app/](https://frontend-psi-weld-u5xxyzg6a6.vercel.app/)** | **Vercel** (React Frontend) |
+| **Backend API Service** | **[https://buywise-backend-5j79.onrender.com](https://buywise-backend-5j79.onrender.com)** | **Render** (Node.js Express + ML Service) |
+| **Source Code Repository** | **[https://github.com/Jahnavi-Patel-C/BuyWise](https://github.com/Jahnavi-Patel-C/BuyWise)** | **GitHub** (Public Repository) |
+
+> **Deployment Architecture Note:** The frontend single-page application is hosted globally on **Vercel** for low latency and instant static caching, while the backend API, decision engine, and Python AI/ML microservice run on **Render** connected to a persistent cloud database.
 
 ---
 
@@ -274,22 +283,22 @@ BuyWise/
 BuyWise is architected for zero-cost production deployment across modern cloud platforms:
 
 ```
-┌─────────────────────────────────┐
-│     Vercel (React Frontend)     │
-│   https://buywise.vercel.app    │
-└────────────────┬────────────────┘
-                 │ (VITE_API_URL)
-                 ▼
-┌─────────────────────────────────┐       ┌─────────────────────────────────┐
-│    Render (Express Backend)     │ ────> │   Render (FastAPI ML Service)   │
-│ https://buywise-api.onrender.com│ <──── │ https://buywise-ml.onrender.com │
-└────────────────┬────────────────┘       └─────────────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────┐
-│     MongoDB Atlas (M0 Free)     │
-│  mongodb+srv://.../buywise      │
-└─────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│               Vercel (React Frontend)                  │
+│     https://frontend-psi-weld-u5xxyzg6a6.vercel.app    │
+└───────────────────────────┬────────────────────────────┘
+                            │ (VITE_API_URL)
+                            ▼
+┌────────────────────────────────────────────────────────┐       ┌─────────────────────────────────┐
+│               Render (Express Backend)                 │ ────> │   Render (FastAPI ML Service)   │
+│        https://buywise-backend-5j79.onrender.com       │ <──── │ https://buywise-ml.onrender.com │
+└───────────────────────────┬────────────────────────────┘       └─────────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│                MongoDB Atlas (M0 Free)                 │
+│               mongodb+srv://.../buywise                │
+└────────────────────────────────────────────────────────┘
 ```
 
 ### 1. Database (MongoDB Atlas)
