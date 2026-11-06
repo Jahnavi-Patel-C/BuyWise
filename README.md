@@ -2,6 +2,13 @@
 
 > **AI-Powered Personal Finance & Purchasing Decision Assistant for College Students**
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Jahnavi--Patel--C%2FBuyWise-181717?style=flat&logo=github)](https://github.com/Jahnavi-Patel-C/BuyWise)
+[![Tests Passing](https://img.shields.io/badge/Tests-53%2F53%20Passing-success)](https://github.com/Jahnavi-Patel-C/BuyWise)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+- **Official Repository**: [https://github.com/Jahnavi-Patel-C/BuyWise](https://github.com/Jahnavi-Patel-C/BuyWise)
+- **Live Application URL**: Deployed via Vercel + Render *(see [Live Cloud Deployment Guide](#8-live-cloud-deployment-guide) below)*
+
 ---
 
 ## 1. Project Overview
@@ -259,4 +266,62 @@ BuyWise/
 8. **Input Validation**: Zero or negative amounts rejected with clear error status.
 9. **Strict User Isolation**: Verified that User B cannot query or mutate User A's financial transactions or profile.
 10. **Timeline Date Sensitivity**: Evaluates whether planned purchase date falls before or after income arrival.
+
+---
+
+## 8. Live Cloud Deployment Guide
+
+BuyWise is architected for zero-cost production deployment across modern cloud platforms:
+
+```
+┌─────────────────────────────────┐
+│     Vercel (React Frontend)     │
+│   https://buywise.vercel.app    │
+└────────────────┬────────────────┘
+                 │ (VITE_API_URL)
+                 ▼
+┌─────────────────────────────────┐       ┌─────────────────────────────────┐
+│    Render (Express Backend)     │ ────> │   Render (FastAPI ML Service)   │
+│ https://buywise-api.onrender.com│ <──── │ https://buywise-ml.onrender.com │
+└────────────────┬────────────────┘       └─────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│     MongoDB Atlas (M0 Free)     │
+│  mongodb+srv://.../buywise      │
+└─────────────────────────────────┘
+```
+
+### 1. Database (MongoDB Atlas)
+1. Sign in to [MongoDB Atlas](https://www.mongodb.com/atlas) and create a free **M0 cluster**.
+2. Under **Database Access**, create a user (e.g. `buywise_admin`) with password.
+3. Under **Network Access**, add `0.0.0.0/0` (Allow Access from Anywhere) so cloud hosting can connect.
+4. Click **Connect -> Drivers** to copy your connection string:
+   ```
+   mongodb+srv://<username>:<password>@cluster0.xyz.mongodb.net/buywise?retryWrites=true&w=majority
+   ```
+
+### 2. Backend & ML Service (Render Blueprint)
+1. Sign in to [Render](https://render.com).
+2. Click **New + -> Blueprint**.
+3. Connect repository `https://github.com/Jahnavi-Patel-C/BuyWise`.
+4. Render automatically parses `render.yaml` to spin up both:
+   - `buywise-ml-service` (Python 3.11 FastAPI with scikit-learn)
+   - `buywise-backend` (Node.js 18+ Express server)
+5. Under `buywise-backend` environment variables, supply your MongoDB Atlas URI:
+   - `MONGODB_URI`: `mongodb+srv://...`
+6. Click **Apply**. Both services will build and deploy with live HTTPS URLs.
+
+### 3. Frontend (Vercel)
+1. Sign in to [Vercel](https://vercel.com).
+2. Click **Add New -> Project** and import `Jahnavi-Patel-C/BuyWise`.
+3. Configure project settings:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Under **Environment Variables**, add:
+   - `VITE_API_URL`: `<your-render-backend-url>/api` (e.g. `https://buywise-backend.onrender.com/api`)
+5. Click **Deploy**. Vercel will build and assign your production domain.
+
 
