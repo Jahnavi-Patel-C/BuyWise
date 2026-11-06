@@ -21,3 +21,4 @@ try:
                 print('Seed demo calls in JS:', demo_calls[:3])
 except Exception as e:
     print('Error:', e)
+
