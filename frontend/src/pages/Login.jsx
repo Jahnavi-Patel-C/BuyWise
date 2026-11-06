@@ -7,30 +7,30 @@ export default function Login({ onSwitchToRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(null); // 'login' | 'demo' | null
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setLoadingAction('login');
     try {
       await login(email, password);
     } catch (err) {
       setError(err.message || 'Failed to login');
     } finally {
-      setLoading(false);
+      setLoadingAction(null);
     }
   };
 
   const handleDemo = async () => {
     setError('');
-    setLoading(true);
+    setLoadingAction('demo');
     try {
       await loadDemoData();
     } catch (err) {
       setError(err.message || 'Failed to load demo account');
     } finally {
-      setLoading(false);
+      setLoadingAction(null);
     }
   };
 
@@ -62,11 +62,20 @@ export default function Login({ onSwitchToRegister }) {
             <button
               type="button"
               onClick={handleDemo}
-              disabled={loading}
-              className="mt-3 w-full py-2 px-3 bg-lavender-600 hover:bg-lavender-700 text-white rounded-xl text-xs font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              disabled={!!loadingAction}
+              className="mt-3 w-full py-2.5 px-3 bg-lavender-600 hover:bg-lavender-700 text-white rounded-xl text-xs font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
             >
-              <Zap className="w-3.5 h-3.5" />
-              <span>Launch Demo Student Workspace</span>
+              {loadingAction === 'demo' ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Loading Demo Workspace... (connecting to server)</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Launch Demo Student Workspace</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -80,9 +89,12 @@ export default function Login({ onSwitchToRegister }) {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{error}</span>
+            <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex flex-col gap-1">
+              <div className="flex items-center gap-2 font-semibold">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+                <span>Authentication Notice</span>
+              </div>
+              <p className="text-rose-700 pl-6 leading-relaxed">{error}</p>
             </div>
           )}
 
@@ -117,11 +129,20 @@ export default function Login({ onSwitchToRegister }) {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-2.5 px-4 bg-charcoal-900 hover:bg-charcoal-800 text-white rounded-xl text-sm font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              disabled={!!loadingAction}
+              className="w-full py-2.5 px-4 bg-charcoal-900 hover:bg-charcoal-800 text-white rounded-xl text-sm font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
             >
-              <span>{loading ? 'Signing in...' : 'Sign In to BuyWise'}</span>
-              <ArrowRight className="w-4 h-4" />
+              {loadingAction === 'login' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Signing In... (connecting to server)</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In to BuyWise</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
 

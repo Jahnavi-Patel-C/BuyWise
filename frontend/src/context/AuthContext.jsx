@@ -34,8 +34,14 @@ export function AuthProvider({ children }) {
       localStorage.setItem('buywise_token', res.token);
       setToken(res.token);
       setUser(res.user);
-      const profRes = await api.profile.get();
-      setProfile(profRes.profile);
+      try {
+        const profRes = await api.profile.get();
+        if (profRes && profRes.profile) {
+          setProfile(profRes.profile);
+        }
+      } catch (err) {
+        console.warn('Initial profile load deferred:', err);
+      }
     }
     return res;
   };
@@ -46,8 +52,14 @@ export function AuthProvider({ children }) {
       localStorage.setItem('buywise_token', res.token);
       setToken(res.token);
       setUser(res.user);
-      const profRes = await api.profile.get();
-      setProfile(profRes.profile);
+      try {
+        const profRes = await api.profile.get();
+        if (profRes && profRes.profile) {
+          setProfile(profRes.profile);
+        }
+      } catch (err) {
+        console.warn('Initial profile load deferred:', err);
+      }
     }
     return res;
   };
@@ -58,8 +70,14 @@ export function AuthProvider({ children }) {
       localStorage.setItem('buywise_token', res.token);
       setToken(res.token);
       setUser(res.user);
-      const profRes = await api.profile.get();
-      setProfile(profRes.profile);
+      try {
+        const profRes = await api.profile.get();
+        if (profRes && profRes.profile) {
+          setProfile(profRes.profile);
+        }
+      } catch (err) {
+        console.warn('Initial demo profile load deferred:', err);
+      }
     }
     return res;
   };

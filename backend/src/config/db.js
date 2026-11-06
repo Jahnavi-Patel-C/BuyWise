@@ -9,7 +9,9 @@ export async function connectDB() {
   if (uri && uri.trim() !== '') {
     try {
       console.log(`Connecting to MongoDB at specified URI...`);
-      await mongoose.connect(uri);
+      await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 6000,
+      });
       console.log(`Connected successfully to MongoDB Database`);
       return;
     } catch (err) {

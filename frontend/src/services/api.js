@@ -1,6 +1,17 @@
-const API_BASE = import.meta.env.VITE_API_URL
-  ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
-  : '/api';
+function resolveApiBase() {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || typeof envUrl !== 'string') {
+    return '/api';
+  }
+  let clean = envUrl.trim().replace(/\/+$/, '');
+  // If remote URL was configured without /api suffix (e.g. https://buywise-backend.onrender.com), ensure /api is attached
+  if (clean.startsWith('http') && !clean.endsWith('/api')) {
+    clean = `${clean}/api`;
+  }
+  return clean;
+}
+
+const API_BASE = resolveApiBase();
 
 function getAuthHeaders() {
   const token = localStorage.getItem('buywise_token');
@@ -11,16 +22,45 @@ function getAuthHeaders() {
 }
 
 async function request(endpoint, options = {}) {
-  const url = `${API_BASE}${endpoint}`;
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE}${normalizedEndpoint}`;
+
+  // 60-second timeout provides tolerance for Render free-tier cold-start wakeups
+  const timeoutMs = options.timeoutMs || 60000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
   const config = {
     ...options,
+    signal: controller.signal,
     headers: {
       ...getAuthHeaders(),
       ...(options.headers || {}),
     },
   };
 
-  const response = await fetch(url, config);
+  let response;
+  try {
+    response = await fetch(url, config);
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      const timeoutError = new Error(
+        'Server took too long to respond. Render free-tier backends spin down on idle and take ~30-45s to wake up. Please wait 15 seconds and try again.'
+      );
+      timeoutError.status = 504;
+      throw timeoutError;
+    }
+    const networkError = new Error(
+      `Cannot connect to BuyWise backend (${API_BASE}). If the server is waking up from idle sleep, please wait 15 seconds and retry.`
+    );
+    networkError.status = 0;
+    networkError.cause = err;
+    throw networkError;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {

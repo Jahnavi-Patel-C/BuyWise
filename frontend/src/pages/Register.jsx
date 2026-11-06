@@ -46,9 +46,12 @@ export default function Register({ onSwitchToLogin }) {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
         <div className="bg-surface py-8 px-6 sm:px-10 rounded-2xl border border-charcoal-200/80 shadow-card">
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{error}</span>
+            <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex flex-col gap-1">
+              <div className="flex items-center gap-2 font-semibold">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+                <span>Registration Notice</span>
+              </div>
+              <p className="text-rose-700 pl-6 leading-relaxed">{error}</p>
             </div>
           )}
 
@@ -98,10 +101,19 @@ export default function Register({ onSwitchToLogin }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-sage-600 hover:bg-sage-700 text-white rounded-xl text-sm font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="w-full py-2.5 px-4 bg-sage-600 hover:bg-sage-700 text-white rounded-xl text-sm font-semibold shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
             >
-              <span>{loading ? 'Creating Account...' : 'Get Started'}</span>
-              <ArrowRight className="w-4 h-4" />
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating Account... (connecting to server)</span>
+                </>
+              ) : (
+                <>
+                  <span>Get Started</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
 

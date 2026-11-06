@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Home,
   ShoppingBag,
@@ -16,6 +16,18 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar({ currentTab, setCurrentTab }) {
   const { user, profile, logout, loadDemoData } = useAuth();
+  const [loadingDemo, setLoadingDemo] = useState(false);
+
+  const handleResetDemo = async () => {
+    setLoadingDemo(true);
+    try {
+      await loadDemoData();
+    } catch (err) {
+      console.error('Demo reset error:', err);
+    } finally {
+      setLoadingDemo(false);
+    }
+  };
 
   const navItems = [
     { id: 'home', label: 'Home Overview', icon: Home },
@@ -90,10 +102,12 @@ export default function Sidebar({ currentTab, setCurrentTab }) {
           Load preconfigured student allowance, fees & transactions.
         </p>
         <button
-          onClick={loadDemoData}
-          className="w-full py-1.5 px-2 bg-lavender-600 hover:bg-lavender-700 text-white rounded-lg text-xs font-medium transition-colors shadow-soft"
+          onClick={handleResetDemo}
+          disabled={loadingDemo}
+          className="w-full py-1.5 px-2 bg-lavender-600 hover:bg-lavender-700 text-white rounded-lg text-xs font-medium transition-colors shadow-soft flex items-center justify-center gap-1.5 disabled:opacity-60"
         >
-          Reset / Load Demo Data
+          {loadingDemo && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+          <span>{loadingDemo ? 'Reloading...' : 'Reset / Load Demo Data'}</span>
         </button>
       </div>
 
